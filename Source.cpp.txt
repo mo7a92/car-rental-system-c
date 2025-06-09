@@ -1,0 +1,904 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#define CARSIZE 1000      // Maximum number of cars that can be handled
+#define SIZE 800          // Define the maximum number of customers
+#define PHONESIZE 11        // Define the maximum length of phone number
+#define NAMESIZE 80        // Maximum length of customer's name
+#define CAR 30             // Maximum length of car's name    
+#define RSIZE 1000         // Maximum number of reservations that can be handled
+
+/*
+ * Car Rental Management System
+
+  ** This program is designed to manage a car rental business, providing a comprehensive suite of functionalities
+  to handle customers, cars, and reservations. It offers a user-friendly interface for adding, modifying,
+  and removing customer and car records, along with the ability to manage car reservations.
+
+  Features:
+  1. Customer Management:
+     - Add new customers, including their name and phone number.
+     - Modify existing customer details.
+     - Remove customers from the system.
+     - Find and display customer information based on customer ID.
+     - Display a list of all registered customers.
+
+  2. Car Management:
+     - Add new cars to the system, specifying details like model, color, and rental price.
+     - Modify details of existing cars.
+     - Remove cars from the system.
+     - Find and display car information based on car ID.
+     - Display a list of all available cars.
+
+  3. Reservation Management:
+     - Create new car reservations, linking customers to specific cars and specifying rental duration.
+     - Cancel existing reservations.
+     - Search for reservations by reservation ID.
+     - Display all current reservations with detailed information.
+
+  4. Data Persistence:
+     - Save and load customer, car, and reservation data from files, ensuring data persistence across sessions.
+
+  5. User Interface:
+     - The program offers a simple text-based menu system for navigating through different functionalities.
+
+ ** This system is built using standard C++ libraries and is designed for simplicity and ease of use, making it
+  suitable for small to medium-sized car rental businesses.
+ */
+
+ // Global variables:
+int Rdays;
+int customer_count = 0, car_count = 0;
+int Rindex = 0;
+
+// ############################################################################################ Function prototypes ##########################################################################
+
+void ReadFromFile(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[], int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[], int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[], double reservePrice[]);
+void SaveRData(int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[], double reservePrice[]);
+void SaveData(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[],
+    int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[]);
+void remove_car(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[]);
+void Find_car_ByID(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[]);
+void modify_car(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[]);
+void AddNewCar(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[]);
+void remove_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[]);
+void Find_customer_ByID(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[]);
+void modify_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[]);
+void adding_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[]);
+void reserve(int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[], int CarID[], int CustomerID[]);
+void delete_reservation(int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[], int* Rindex);
+void display_reserves(int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[], int CarID[], int CustomerID[], char CustomerName[][NAMESIZE], char car_model[CARSIZE][CAR], double rent_price[], double reservePrice[]);
+void search_reserve_id(int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[]);
+void car_menu();
+void dis_main_menu();
+void dis_customer_menu();
+
+// ##################################################################################### Main function ####################################################################################
+
+int main() {
+    // Arrays to store customer details
+    char CustomerName[SIZE][NAMESIZE], CustomerNumber[SIZE][PHONESIZE], car_color[CARSIZE][CAR], car_model[CARSIZE][CAR];
+    int choice, second_choice = -1, CustomerID[SIZE], CarID[CARSIZE], reserveCustomerID[RSIZE], reserveCarID[RSIZE], reserveDays[RSIZE], reserveID[RSIZE];
+    double rent_price[CARSIZE], reservePrice[RSIZE];
+
+    ReadFromFile(CustomerName, CustomerNumber, CustomerID, CarID, car_color, car_model, rent_price,
+        reserveID, reserveCustomerID, reserveCarID, reserveDays, reservePrice);
+
+
+    // Main loop to display program menu until user exit
+    while (1) {
+
+        dis_main_menu();
+        if (scanf_s("%d", &choice) != 1) {
+            // Input was not an integer, clear the buffer
+            while (getchar() != '\n');
+            printf("\n!! Invalid input. Please enter a number.\n");
+            continue; // Skip the rest of the loop and start over
+        }
+        // Main menu switch
+        switch (choice) {
+            // Manage Customers
+        case 1:
+            // Loop to manage customer-related tasks
+            while (1) {
+                dis_customer_menu();
+                if (scanf_s("%d", &second_choice) != 1) {
+                    // Input was not an integer, clear the buffer
+                    while (getchar() != '\n');
+                    printf("\n!! Invalid input. Please enter a number.\n");
+                    continue;
+                }
+                // Customer menu switch
+                switch (second_choice) {
+                    // Case 1 to 5: Perform different customer-related tasks
+                case 1:
+                    // Register New Customer
+                    printf("\n************************************ Register New Customer ************************************\n");
+                    adding_customer(CustomerName, CustomerNumber, CustomerID);
+                    break;
+                case 2:
+                    // Remove Customer Record
+                    printf("\n************************************ Remove Customer Record ************************************\n");
+                    remove_customer(CustomerName, CustomerNumber, CustomerID);
+                    break;
+                case 3:
+                    // Modify Customer Details
+                    printf("\n************************************ Modify Customer Details ************************************\n\n");
+                    modify_customer(CustomerName, CustomerNumber, CustomerID);
+                    break;
+                case 4:
+                    // Find Customer by ID
+                    printf("\n************************************ Find Customer by ID ************************************\n");
+                    Find_customer_ByID(CustomerName, CustomerNumber, CustomerID);
+                    break;
+                case 5:
+                    // Show All Customers
+                    printf("\n************************************ Show All Customers ************************************\n");
+
+                    for (int n = 0; n < customer_count; ++n) {
+                        printf("\n** Customer Number %d\n\n", n + 1);
+                        printf("Customer Name: %s  Customer ID: %d  Customer Phone: %s\n", CustomerName[n], CustomerID[n], CustomerNumber[n]);
+                    }
+                    break;
+                case 6:
+                    // Return to Main Menu
+                    break;
+                default:
+                    // Wrong choice in customer menu
+                    printf("\n!!! Wrong Choice !!!\n\n");
+                    break;
+                }
+                // Break loop to return to the main menu
+                if (second_choice == 6) {
+                    break;
+                }
+
+            }
+            break;
+            // Case 2 to 5: Placeholder for other main menu options
+        case 2:
+            while (1) {
+                car_menu();
+                if (scanf_s("%d", &second_choice) != 1) {
+                    // Input was not an integer, clear the buffer
+                    while (getchar() != '\n');
+                    printf("\n!! Invalid input. Please enter a number.\n");
+                    continue;
+                }
+                switch (second_choice)
+                {
+                case 1:
+                    // Adding a New Car
+                    // Adds a new car to the system
+                    printf("\n************************************ Adding a New Car ************************************\n");
+                    AddNewCar(CarID, car_color, car_model, rent_price);
+                    break;
+                case 2:
+                    // Remove a Car
+                    // Removes an existing car from the system
+                    printf("\n************************************ Remove a Car ************************************\n");
+                    remove_car(CarID, car_color, car_model, rent_price);
+                    break;
+                case 3:
+                    // Modify Car Details
+                    // Modifies the details of an existing car
+                    printf("\n************************************ Modify Car Details ************************************\n\n");
+                    modify_car(CarID, car_color, car_model, rent_price);
+                    break;
+                case 4:
+                    // Find Car By ID
+                    // Searches for and displays details of a car by its ID
+                    printf("\n************************************ Find Car By ID ************************************\n");
+                    Find_car_ByID(CarID, car_color, car_model, rent_price);
+
+                    break;
+                case 5:
+                    // Show All Cars
+                    // Displays a list of all cars in the system
+                    printf("\n************************************ Show All Cars ************************************\n");
+                    for (int n = 0; n < car_count; ++n) {
+                        printf("\n** Car Number %d\n\n", n + 1);
+                        printf("Car Model: %s  Car ID: %d  Car Color: %s  Car Rent Price: %.2lf$\n", car_model[n], CarID[n], car_color[n], rent_price[n]);
+                    }
+                    break;
+
+
+                case 6:
+                    // Return To Main Menu
+                    // Exits the car menu and returns to the main menu
+                    break;
+                default:
+                    // Invalid choice in car menu
+                    printf("\n!!! Wrong Choice !!!\n\n");
+                    break;
+                }
+                // Break loop to return to the main menu
+                if (second_choice == 6) {
+                    break;
+                }
+            }
+            break;
+        case 3:
+            // Reservation menu switch
+            while (1)
+            {
+                printf("\n#################################################\n");
+                printf("1- Make new Reservation\n");
+                printf("2- Cancel Reservation\n");
+                printf("3- Search Reservation\n");
+                printf("4- Show all Reservations\n");
+                printf("5- Return to main menu\n");
+                printf("Choose an option: ");
+                if (scanf_s("%d", &second_choice) != 1) {
+
+                    while (getchar() != '\n');
+                    printf("\n!! Invalid input. Please enter a number.\n");
+                    continue;
+                }
+                switch (second_choice)
+                {
+                case 1:
+                    // Make new Reservation
+                    // Creates a new reservation for a car
+                    printf("\n************************************ Make new Reservation ************************************\n");
+                    reserve(reserveID, reserveCustomerID, reserveCarID, reserveDays, CarID, CustomerID);
+                    break;
+                case 2:
+                    // Cancel Reservation
+                    // Cancels an existing reservation
+                    printf("\n************************************ Cancel a Reservation ************************************\n");
+                    delete_reservation(reserveID, reserveCustomerID, reserveCarID, reserveDays, &Rindex);
+                    break;
+                case 3:
+                    // Search Reservation
+                    // Searches for a reservation by its ID
+                    printf("\n************************************ Search for a Reservation ************************************\n\n");
+                    search_reserve_id(reserveID, reserveCustomerID, reserveCarID, reserveDays);
+                    break;
+                case 4:
+                    // Show all Reservations
+                    // Displays all current reservations in the system
+                    printf("\n************************************ Show All Reservations ************************************\n");
+                    display_reserves(reserveID, reserveCustomerID, reserveCarID, reserveDays, CarID, CustomerID, CustomerName, car_model, rent_price, reservePrice);
+                    break;
+                case 5:
+                    // Return to main menu
+                    // Exits the reservation menu and returns to the main menu
+                    break;
+                default:
+                    // Invalid choice in reservation menu
+                    printf("\n!!! Wrong Choice !!!\n\n");
+                    break;
+                }
+                // Break loop to return to the main menu
+                if (second_choice == 5) {
+                    break;
+                }
+            }
+            break;
+
+        case 4:
+            // Save Data to File
+            // This option allows the user to save all current data (customers, cars, and reservations) to external files.
+            // The function 'SaveData' is called to save customer and car information.
+            // The function 'SaveRData' is called to save reservation information.
+            SaveData(CustomerName, CustomerNumber, CustomerID, CarID, car_color, car_model, rent_price);
+            SaveRData(reserveID, reserveCustomerID, reserveCarID, reserveDays, reservePrice);
+
+            printf("\n!!** DATA SAVED **!!\n");
+            break;
+        case 5:
+            // Exit Program
+            // This case handles the termination of the program. 
+            // When this option is selected, the program will print a goodbye message and then terminate.
+            break;
+        default:
+
+            printf("\n!!! Wrong Choice !!!\n\n");
+            break;
+        }
+        // Break loop to exit the program
+        if (choice == 5) {
+            printf("\n**** Thank you ****\n  ** Good Bye **");
+            break;
+        }
+    }
+    return 0;
+}
+
+// ################################################################################### Functions Area ############################################################################################
+
+// Displays the car management menu
+void car_menu() {
+    printf("\n#################################################\n");
+    printf("1- Adding a New Car\n");
+    printf("2- Remove a Car\n");
+    printf("3- Modify Car Details\n");
+    printf("4- Find Car By ID\n");
+    printf("5- Show All Cars\n");
+    printf("6- Return To Main Menu\n");
+    printf("Choose an action: ");
+}
+// Displays the main menu of the program
+void dis_main_menu() {
+    printf("\n>>>>>********** Welcome to Our Car Rental System **********<<<<<\n");
+    printf("\n1 - Manage Customers\n");
+    printf("2 - Manage Cars\n");
+    printf("3 - Manage Reservations\n");
+    printf("4 - Save Data to File\n");
+    printf("5 - Exit Program\n");
+    printf("Select an option: ");
+}
+// Displays the customer management menu
+void dis_customer_menu() {
+    printf("\n#################################################\n");
+    printf("\n1- Register New Customer\n");
+    printf("2- Remove Customer Record\n");
+    printf("3- Modify Customer Details\n");
+    printf("4- Find Customer by ID\n");
+    printf("5- Show All Customers\n");
+    printf("6- Return to Main Menu\n");
+    printf("Choose an action: ");
+}
+// Adds a new customer to the system
+void adding_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[]) {
+    int i;
+    char* nPtr;
+
+    printf("\nPlease enter customer ID: ");
+    scanf_s("%d%*c", &CustomerID[customer_count]);
+
+    for (i = 0; i < customer_count; ++i) {
+        if (CustomerID[i] == CustomerID[customer_count]) {
+            printf("\n!!! Can’t Add Customers With Same ID !!!\n");
+            i = -1;
+            break;
+        }
+        if (i == -1)
+            break;
+    }
+
+    while (i != -1) {
+        while (1) {
+
+            printf("\nPlease enter customer's (Firstname Lastname) (Ex: Sultan Ahemd): ");
+
+            fgets(CustomerName[customer_count], NAMESIZE, stdin);
+            nPtr = strchr(CustomerName[customer_count], '\n');
+            if (nPtr) {
+                *nPtr = '\0';
+                if (strchr(CustomerName[customer_count], ' ')) {
+                    break;
+                }
+                else {
+                    printf("\n**** Wrong Input! the format should be (Firstname Lastname). Ex: (Ali Sheikh) ****\n");
+                }
+            }
+        }
+
+        printf("\nPlease enter customer Phone Number: ");
+        scanf_s("%s", CustomerNumber[customer_count], PHONESIZE);
+
+        printf("\n************************************ Customer Added Succesfully! ************************************\n");
+        customer_count += 1;
+        break;
+
+
+    }
+}
+// Modifies existing customer information
+void modify_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[]) {
+
+    bool validation = false;
+    int ID, n = 0;
+
+
+    if (customer_count == 0) {
+        printf("\n! There is no Customers to modify !\n **** Add a customer first**** \n");
+    }
+    else {
+
+        printf("\nPlease enter Customer ID you want to Modify: ");
+        scanf_s("%d", &ID);
+        for (; n < customer_count; ++n) {
+            if (CustomerID[n] == ID) {
+                validation = true;
+                break;
+            }
+        }
+        if (validation == true) {
+            char* nPtr;
+
+            printf("\nPlease enter the new customer ID: ");
+            scanf_s("%d%*c", &CustomerID[n]);
+
+            while (1) {
+
+                printf("\nPlease enter customer's (Firstname Lastname) Ex: (Sultan Ahemd): ");
+
+                fgets(CustomerName[customer_count], NAMESIZE, stdin);
+                nPtr = strchr(CustomerName[customer_count], '\n');
+                if (nPtr) {
+                    *nPtr = '\0';
+                    if (strchr(CustomerName[customer_count], ' ')) {
+                        break;
+                    }
+                    else {
+                        printf("\n**** Wrong Input! the format should be (Firstname Lastname). Ex: (Ali Sheikh) ****\n");
+                    }
+                }
+            }
+
+            printf("\nPlease enter the new customer Phone Number: ");
+            scanf_s("%s", CustomerNumber[n], PHONESIZE);
+            printf("\n************************************ Customer has been Modified! ************************************\n");
+        }
+        else {
+            printf("\n!! The ID you entered is not registered\n");
+        }
+
+    }
+}
+// Finds a customer by their ID
+void Find_customer_ByID(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[]) {
+
+    bool validation = false;
+    int ID, l = 0;
+
+    if (customer_count == 0) {
+        printf("\n! There is no Customers to search !\n **** Add a customer first**** \n");
+    }
+    else {
+
+        printf("\nPlease enter Customer ID you want to search: ");
+        scanf_s("%d", &ID);
+        for (; l < customer_count; ++l) {
+            if (CustomerID[l] == ID) {
+                validation = true;
+                break;
+            }
+        }
+        if (validation == true)
+        {
+            printf("\nCustomer Name: %s  Customer ID: %d  Customer Phone: %s\n", CustomerName[l], CustomerID[l], CustomerNumber[l]);
+
+        }
+        else {
+            printf("!! The ID you entered is not registered\n");
+        }
+    }
+}
+// Removes a customer from the system
+void remove_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[]) {
+
+    int ID, n, IDindex = 0;
+    bool validation = false;
+
+    if (customer_count == 0) {
+        printf("\n! There is no Customers to remove !\n **** Add a customer first**** \n");
+    }
+    else {
+
+        printf("\nPlease enter Customer ID you want to Remove: ");
+        scanf_s("%d", &ID);
+
+        for (n = IDindex; n < customer_count; n++) {
+            if (CustomerID[n] == ID)
+            {
+                IDindex = n;
+                validation = true;
+                break;
+            }
+
+        }
+        if (validation == true) {
+            for (int f = IDindex; f < customer_count - 1; ++f) {
+                CustomerID[f] = CustomerID[f + 1];
+                strcpy_s(CustomerName[f], CustomerName[f + 1]);
+                strcpy_s(CustomerNumber[f], CustomerNumber[f + 1]);
+            }
+            customer_count -= 1;
+            printf("\n************************************ Customer has been Removed! ************************************\n");
+        }
+        else {
+
+            printf("!! The ID you entered is not registered\n");
+
+        }
+    }
+}
+// Adds a new car to the system
+void AddNewCar(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[]) {
+    int i;
+    char* cPtr;
+    printf("\nPlease enter car ID: ");
+    scanf_s("%d%*c", &CarID[car_count]);
+
+    for (i = 0; i < car_count; ++i) {
+        if (CarID[i] == CarID[car_count]) {
+            printf("\n!!! Can’t Add Cars With Same ID !!!\n");
+            i = -1;
+            break;
+        }
+        if (i == -1)
+            break;
+    }
+    while (i != -1) {
+        while (1) {
+
+            printf("\nPlease enter car's (Company CarModel) (Ex: Toyota Camry): ");
+
+            fgets(car_model[car_count], CAR, stdin);
+            cPtr = strchr(car_model[car_count], '\n');
+            if (cPtr) {
+                *cPtr = '\0';
+                if (strchr(car_model[car_count], ' ')) {
+                    break;
+                }
+                else {
+                    printf("\n**** Wrong Input! the format should be (Company CarModel). (Ex: Hyundai Accent)****\n");
+                }
+            }
+        }
+
+        printf("\nPlease enter car color: ");
+        scanf_s("%s", car_color[car_count], CAR);
+        printf("\nPlease enter rent price: ");
+        scanf_s("%lf", &rent_price[car_count]);
+        printf("\n************************************ Car Added Succesfully! ************************************\n");
+        car_count += 1;
+        break;
+    }
+}
+// Modifies existing car information
+void modify_car(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[]) {
+
+    bool validation = false;
+    int ID, n = 0;
+
+
+    if (car_count == 0) {
+        printf("\n! There is no Cars to modify !\n **** Add a Car first**** \n");
+    }
+    else {
+        printf("\nPlease enter Car ID you want to Modify: ");
+        scanf_s("%d", &ID);
+        for (; n < car_count; ++n) {
+            if (CarID[n] == ID) {
+                validation = true;
+                break;
+            }
+        }
+        if (validation == true) {
+            char* cPtr;
+
+            printf("\nPlease enter the new car ID: ");
+            scanf_s("%d%*c", &CarID[n]);
+            while (1) {
+
+                printf("\nPlease enter car's (Company CarModel) (Ex: Toyota Camry): ");
+
+                fgets(car_model[car_count], CAR, stdin);
+                cPtr = strchr(car_model[car_count], '\n');
+                if (cPtr) {
+                    *cPtr = '\0';
+                    if (strchr(car_model[car_count], ' ')) {
+                        break;
+                    }
+                    else {
+                        printf("\n**** Wrong Input! the format should be (Company CarModel). (Ex: Hyundai Accent)****\n");
+                    }
+                }
+            }
+
+
+            printf("\nPlease enter the new car color: ");
+            scanf_s("%s", car_color[n], CAR);
+            printf("\nPlease enter the new rent price: ");
+            scanf_s("%lf", &rent_price[n]);
+            printf("\n************************************ Car Modified Succesfully! ************************************\n");
+        }
+        else {
+            printf("!! The ID you entered is not registered\n");
+
+        }
+    }
+}
+// Finds a car by its ID
+void Find_car_ByID(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[]) {
+    bool validation = false;
+    int ID, l = 0;
+
+
+    if (car_count == 0) {
+        printf("\n! There is no Customers to search !\n **** Add a customer first**** \n");
+    }
+    else {
+        printf("\nPlease enter Car ID you want to search: ");
+        scanf_s("%d", &ID);
+        for (; l < car_count; ++l) {
+            if (CarID[l] == ID) {
+                validation = true;
+                break;
+            }
+        }
+        if (validation == true) {
+            printf("\nCar Model: %s  Car ID: %d  Car Color: %s  Car Rent Price: %.2lf$\n", car_model[l], CarID[l], car_color[l], rent_price[l]);
+        }
+        else {
+            printf("\n!! The ID you entered is not registered\n");
+        }
+    }
+}
+// Removes a car from the system
+void remove_car(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[]) {
+    int ID, n, IDindex = 0;
+    bool validation = false;
+
+    if (car_count == 0) {
+        printf("\n! There is no Cars to remove !\n **** Add a Car first**** \n");
+    }
+    else {
+
+        printf("\nPlease enter Car ID you want to Remove: ");
+        scanf_s("%d", &ID);
+
+        for (n = IDindex; n < car_count; n++) {
+            if (CarID[n] == ID)
+            {
+                IDindex = n;
+                validation = true;
+                break;
+            }
+
+        }
+        if (validation == true) {
+            for (int f = IDindex; f < car_count - 1; ++f) {
+                CarID[f] = CarID[f + 1];
+                rent_price[f] = rent_price[f + 1];
+                strcpy_s(car_model[f], car_model[f + 1]);
+                strcpy_s(car_color[f], car_color[f + 1]);
+            }
+            car_count -= 1;
+            printf("\n************************************ Car has been Removed! ************************************\n");
+        }
+        else {
+
+            printf("!! The ID you entered is not registered\n");
+
+        }
+    }
+}
+// Handles reservation creation
+void reserve(int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[], int CarID[], int CustomerID[]) {
+    int id, ID;
+    id = 1000 + Rindex;
+    reserveID[Rindex] = id;
+    bool CustomerValidation = false, CarValidation = false;
+
+    printf("\nPlease enter Car ID: ");
+    scanf_s("%d", &reserveCarID[Rindex]);
+
+    // Check if car is already reserved
+    for (int i = 0; i < Rindex; ++i) {
+        if (reserveCarID[i] == reserveCarID[Rindex]) {
+            printf("\n!!! Can’t reserve car because it's already reserved !!!\n");
+            return; // Exit the function if car is already reserved
+        }
+    }
+
+    // Validate Car ID
+    for (int i = 0; i < car_count; ++i) {
+        if (CarID[i] == reserveCarID[Rindex]) {
+            CarValidation = true;
+            break;
+        }
+    }
+
+    printf("\nPlease enter Customer ID: ");
+    scanf_s("%d", &ID);
+
+    // Validate Customer ID
+    for (int i = 0; i < customer_count; ++i) {
+        if (CustomerID[i] == ID) {
+            CustomerValidation = true;
+            break;
+        }
+    }
+
+    if (CustomerValidation && CarValidation) {
+        reserveCustomerID[Rindex] = ID;
+        printf("\nEnter number of day you want to rent car : ");
+        scanf_s("%d", &reserveDays[Rindex]);
+        Rindex++;
+        printf("\n** Reservation Added Succsecfully! **\n");
+    }
+    else {
+        printf("Invalid Customer ID or Car ID.\n");
+    }
+}
+// Deletes a reservation from the system
+void delete_reservation(int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[], int* Rindex) {
+    int Rid, i, j;
+    bool found = false;
+
+    printf("Enter Reserve ID to cancel the reservation: ");
+    scanf_s("%d", &Rid);
+
+    // Loop through all reservations to find the matching ID
+    for (i = 0; i < *Rindex; ++i) {
+        if (Rid == reserveID[i]) {// Found the reservation to delete
+            found = true;
+            break;
+        }
+    }
+
+    if (found) {
+        // Shift the remaining reservations one position left
+        for (j = i; j < *Rindex - 1; ++j) {
+            reserveID[j] = reserveID[j + 1];
+            reserveCustomerID[j] = reserveCustomerID[j + 1];
+            reserveCarID[j] = reserveCarID[j + 1];
+            reserveDays[j] = reserveDays[j + 1];
+        }
+        (*Rindex)--; // Decrement the total count of reservations
+        printf("\n Reservation ID %d has been removed! \n", Rid);
+    }
+    else {
+        printf("\n Reservation ID %d not found. \n", Rid);
+    }
+}
+// Displays all reservations
+void display_reserves(int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[], int CarID[], int CustomerID[], char CustomerName[][NAMESIZE], char car_model[CARSIZE][CAR], double rent_price[], double reservePrice[]) {
+    printf("%s%19s%19s%19s%19s%19s%19s\n", "NO.", "Reserve ID", "Customer ID", "Customer Name", "Car ID", "Car Type", "Total rent price");
+
+    for (int i = 0; i < Rindex; i++) {
+        char* customer_Name = NULL;
+        char* carModel = NULL;
+        double total = 0.0;
+
+        for (int j = 0; j < customer_count; j++) {
+            if (reserveCustomerID[i] == CustomerID[j]) {
+                customer_Name = CustomerName[j];
+                break;
+            }
+        }
+
+        for (int k = 0; k < car_count; k++) {
+            if (reserveCarID[i] == CarID[k]) {
+                carModel = car_model[k];
+                total = reserveDays[i] * rent_price[k];
+                break;
+            }
+        }
+
+        if (customer_Name != NULL && carModel != NULL) {
+            reservePrice[i] = total;
+            printf("%-14d%-20d%-17d%-24s%-18d%-18s%.1f\n", i + 1, reserveID[i], reserveCustomerID[i], customer_Name, reserveCarID[i], carModel, reservePrice[i]);
+        }
+        else {
+            printf("Reserve is not found");
+
+        }
+    }
+
+}
+// Searches for a reservation by its ID
+void search_reserve_id(int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[]) {
+    int r_id;
+    bool flag = false;
+    printf("Enter reserve id to search : ");
+    scanf_s("%d", &r_id);
+    for (int i = 0; i < Rindex; i++) {
+        if (r_id == reserveID[i]) {
+            printf("%s%25s%25s%25s\n", "Reserve ID", "Customer ID", "Car ID", "No. of days");
+            printf("%-23d%-23d%-24d%d\n", reserveID[i], reserveCustomerID[i], reserveCarID[i], reserveDays[i]);
+            flag = true;
+            break;
+        }
+    }
+    if (!flag) {
+        printf("Reserve ID (%d) not registered\n", r_id);
+    }
+}
+// Saves customer, car, and reservation data to files
+void SaveData(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[], int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[]) {
+    FILE* wPtr;
+
+    // Open customer information file once
+    if (fopen_s(&wPtr, "customerInfo.txt", "w")) {
+        printf("Cannot open customerInfo file\n");
+        return;
+    }
+
+    // Write customer data
+    for (int i = 0; i < customer_count; i++) {
+        if (fprintf(wPtr, "%d\t%s\t%s\n", CustomerID[i], CustomerName[i], CustomerNumber[i]) < 0) {
+            printf("Error writing customer data\n");
+            break;
+        }
+    }
+
+    fclose(wPtr);
+
+    if (fopen_s(&wPtr, "carInfo.txt", "w")) {
+        printf("Cannot open carInfo file\n");
+        return;
+    }
+
+    // Write car data
+    for (int i = 0; i < car_count; i++) {
+        if (fprintf(wPtr, "%d\t%s\t%s\t%.2lf\n", CarID[i], car_model[i], car_color[i], rent_price[i]) < 0) {
+            printf("Error writing car data\n");
+            break;
+        }
+    }
+
+    fclose(wPtr);
+}
+void SaveRData(int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[], double reservePrice[]) {
+
+    FILE* file;
+    fopen_s(&file, "reserveInfo.txt", "wt");
+    if (file == NULL) {
+        if (fscanf_s(file, "%d%d%d%d%lf", &reserveID[Rindex], &reserveCustomerID[Rindex], &reserveCarID[Rindex], &reserveDays[Rindex], &reservePrice[Rindex]) != 5) {
+            printf("Error opening file to write reservations.\n");
+            return;
+        }
+    }
+
+    for (int i = 0; i < Rindex; i++) {
+        fprintf(file, "%d\t%d\t%d\t%d\t%.2lf\n", reserveID[i], reserveCustomerID[i], reserveCarID[i], reserveDays[i], reservePrice[i]);
+    }
+
+    fclose(file);
+}
+// Reads customer, car, and reservation data from files
+void ReadFromFile(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[], int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[], int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[], double reservePrice[]) {
+    FILE* rPtr;
+    if (fopen_s(&rPtr, "customerInfo.txt", "r")) {
+
+    }
+    else {
+        char fName[NAMESIZE], lName[NAMESIZE];
+        while (fscanf_s(rPtr, "%d %79s %79s %10s", &CustomerID[customer_count], fName, NAMESIZE, lName, NAMESIZE, CustomerNumber[customer_count], PHONESIZE) == 4) {
+            // Correctly combine fName and lName into the CustomerName array at customer_count index
+            strcpy_s(CustomerName[customer_count], NAMESIZE, fName);
+            strcat_s(CustomerName[customer_count], NAMESIZE, " ");
+            strcat_s(CustomerName[customer_count], NAMESIZE, lName);
+
+            customer_count++; // Increment customer_count after storing each customer's data
+        }
+        fclose(rPtr);
+    }
+
+    if (fopen_s(&rPtr, "carInfo.txt", "r")) {
+
+    }
+    else {
+        char maintype[CAR], subtype[CAR];
+        while (fscanf_s(rPtr, "%d%s%s%s%lf", &CarID[car_count], maintype, CAR, subtype, CAR, car_color[car_count], CAR, &rent_price[car_count]) == 5) {
+            strcpy_s(car_model[car_count], CAR, maintype);
+            strcat_s(car_model[car_count], CAR, " ");
+            strcat_s(car_model[car_count], CAR, subtype);
+            car_count++;
+        }
+
+        fclose(rPtr);
+    }
+    FILE* file;
+    fopen_s(&file, "reserveInfo.txt", "rt");
+    if (file == NULL) {
+
+    }
+    else {
+        Rindex = 0;
+
+        while (fscanf_s(file, "%d%d%d%d%lf", &reserveID[Rindex], &reserveCustomerID[Rindex], &reserveCarID[Rindex], &reserveDays[Rindex], &reservePrice[Rindex]) == 5) {
+            Rindex++;
+        }
+
+        fclose(file);
+    }
+}
