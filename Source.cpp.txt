@@ -90,7 +90,7 @@ int main() {
     while (1) {
 
         dis_main_menu();
-        if (scanf_s("%d", &choice) != 1) {
+        if (scanf("%d", &choice) != 1) {
             // Input was not an integer, clear the buffer
             while (getchar() != '\n');
             printf("\n!! Invalid input. Please enter a number.\n");
@@ -103,7 +103,7 @@ int main() {
             // Loop to manage customer-related tasks
             while (1) {
                 dis_customer_menu();
-                if (scanf_s("%d", &second_choice) != 1) {
+                if (scanf("%d", &second_choice) != 1) {
                     // Input was not an integer, clear the buffer
                     while (getchar() != '\n');
                     printf("\n!! Invalid input. Please enter a number.\n");
@@ -160,7 +160,7 @@ int main() {
         case 2:
             while (1) {
                 car_menu();
-                if (scanf_s("%d", &second_choice) != 1) {
+                if (scanf("%d", &second_choice) != 1) {
                     // Input was not an integer, clear the buffer
                     while (getchar() != '\n');
                     printf("\n!! Invalid input. Please enter a number.\n");
@@ -230,7 +230,7 @@ int main() {
                 printf("4- Show all Reservations\n");
                 printf("5- Return to main menu\n");
                 printf("Choose an option: ");
-                if (scanf_s("%d", &second_choice) != 1) {
+                if (scanf("%d", &second_choice) != 1) {
 
                     while (getchar() != '\n');
                     printf("\n!! Invalid input. Please enter a number.\n");
@@ -347,11 +347,11 @@ void adding_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONES
     char* nPtr;
 
     printf("\nPlease enter customer ID: ");
-    scanf_s("%d%*c", &CustomerID[customer_count]);
+    scanf("%d%*c", &CustomerID[customer_count]);
 
     for (i = 0; i < customer_count; ++i) {
         if (CustomerID[i] == CustomerID[customer_count]) {
-            printf("\n!!! Can’t Add Customers With Same ID !!!\n");
+            printf("\n!!! Cant Add Customers With Same ID !!!\n");
             i = -1;
             break;
         }
@@ -378,7 +378,7 @@ void adding_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONES
         }
 
         printf("\nPlease enter customer Phone Number: ");
-        scanf_s("%s", CustomerNumber[customer_count], PHONESIZE);
+        scanf("%s", CustomerNumber[customer_count]);
 
         printf("\n************************************ Customer Added Succesfully! ************************************\n");
         customer_count += 1;
@@ -400,7 +400,7 @@ void modify_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONES
     else {
 
         printf("\nPlease enter Customer ID you want to Modify: ");
-        scanf_s("%d", &ID);
+        scanf("%d", &ID);
         for (; n < customer_count; ++n) {
             if (CustomerID[n] == ID) {
                 validation = true;
@@ -411,7 +411,7 @@ void modify_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONES
             char* nPtr;
 
             printf("\nPlease enter the new customer ID: ");
-            scanf_s("%d%*c", &CustomerID[n]);
+            scanf("%d%*c", &CustomerID[n]);
 
             while (1) {
 
@@ -431,7 +431,7 @@ void modify_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONES
             }
 
             printf("\nPlease enter the new customer Phone Number: ");
-            scanf_s("%s", CustomerNumber[n], PHONESIZE);
+            scanf("%s", CustomerNumber[n]);
             printf("\n************************************ Customer has been Modified! ************************************\n");
         }
         else {
@@ -452,7 +452,7 @@ void Find_customer_ByID(char CustomerName[][NAMESIZE], char CustomerNumber[][PHO
     else {
 
         printf("\nPlease enter Customer ID you want to search: ");
-        scanf_s("%d", &ID);
+        scanf("%d", &ID);
         for (; l < customer_count; ++l) {
             if (CustomerID[l] == ID) {
                 validation = true;
@@ -481,7 +481,7 @@ void remove_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONES
     else {
 
         printf("\nPlease enter Customer ID you want to Remove: ");
-        scanf_s("%d", &ID);
+        scanf("%d", &ID);
 
         for (n = IDindex; n < customer_count; n++) {
             if (CustomerID[n] == ID)
@@ -495,8 +495,8 @@ void remove_customer(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONES
         if (validation == true) {
             for (int f = IDindex; f < customer_count - 1; ++f) {
                 CustomerID[f] = CustomerID[f + 1];
-                strcpy_s(CustomerName[f], CustomerName[f + 1]);
-                strcpy_s(CustomerNumber[f], CustomerNumber[f + 1]);
+                strcpy(CustomerName[f], CustomerName[f + 1]);
+                strcpy(CustomerNumber[f], CustomerNumber[f + 1]);
             }
             customer_count -= 1;
             printf("\n************************************ Customer has been Removed! ************************************\n");
@@ -513,11 +513,11 @@ void AddNewCar(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR],
     int i;
     char* cPtr;
     printf("\nPlease enter car ID: ");
-    scanf_s("%d%*c", &CarID[car_count]);
+    scanf("%d%*c", &CarID[car_count]);
 
     for (i = 0; i < car_count; ++i) {
         if (CarID[i] == CarID[car_count]) {
-            printf("\n!!! Can’t Add Cars With Same ID !!!\n");
+            printf("\n!!! Cant Add Cars With Same ID !!!\n");
             i = -1;
             break;
         }
@@ -543,9 +543,9 @@ void AddNewCar(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR],
         }
 
         printf("\nPlease enter car color: ");
-        scanf_s("%s", car_color[car_count], CAR);
+        scanf("%s", car_color[car_count]);
         printf("\nPlease enter rent price: ");
-        scanf_s("%lf", &rent_price[car_count]);
+        scanf("%lf", &rent_price[car_count]);
         printf("\n************************************ Car Added Succesfully! ************************************\n");
         car_count += 1;
         break;
@@ -563,7 +563,7 @@ void modify_car(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR]
     }
     else {
         printf("\nPlease enter Car ID you want to Modify: ");
-        scanf_s("%d", &ID);
+        scanf("%d", &ID);
         for (; n < car_count; ++n) {
             if (CarID[n] == ID) {
                 validation = true;
@@ -574,7 +574,7 @@ void modify_car(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR]
             char* cPtr;
 
             printf("\nPlease enter the new car ID: ");
-            scanf_s("%d%*c", &CarID[n]);
+            scanf("%d%*c", &CarID[n]);
             while (1) {
 
                 printf("\nPlease enter car's (Company CarModel) (Ex: Toyota Camry): ");
@@ -594,9 +594,9 @@ void modify_car(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR]
 
 
             printf("\nPlease enter the new car color: ");
-            scanf_s("%s", car_color[n], CAR);
+            scanf("%s", car_color[n]);
             printf("\nPlease enter the new rent price: ");
-            scanf_s("%lf", &rent_price[n]);
+            scanf("%lf", &rent_price[n]);
             printf("\n************************************ Car Modified Succesfully! ************************************\n");
         }
         else {
@@ -616,7 +616,7 @@ void Find_car_ByID(int CarID[], char car_color[][CAR], char car_model[CARSIZE][C
     }
     else {
         printf("\nPlease enter Car ID you want to search: ");
-        scanf_s("%d", &ID);
+        scanf("%d", &ID);
         for (; l < car_count; ++l) {
             if (CarID[l] == ID) {
                 validation = true;
@@ -642,7 +642,7 @@ void remove_car(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR]
     else {
 
         printf("\nPlease enter Car ID you want to Remove: ");
-        scanf_s("%d", &ID);
+        scanf("%d", &ID);
 
         for (n = IDindex; n < car_count; n++) {
             if (CarID[n] == ID)
@@ -657,8 +657,8 @@ void remove_car(int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR]
             for (int f = IDindex; f < car_count - 1; ++f) {
                 CarID[f] = CarID[f + 1];
                 rent_price[f] = rent_price[f + 1];
-                strcpy_s(car_model[f], car_model[f + 1]);
-                strcpy_s(car_color[f], car_color[f + 1]);
+                strcpy(car_model[f], car_model[f + 1]);
+                strcpy(car_color[f], car_color[f + 1]);
             }
             car_count -= 1;
             printf("\n************************************ Car has been Removed! ************************************\n");
@@ -678,12 +678,12 @@ void reserve(int reserveID[], int reserveCustomerID[], int reserveCarID[], int r
     bool CustomerValidation = false, CarValidation = false;
 
     printf("\nPlease enter Car ID: ");
-    scanf_s("%d", &reserveCarID[Rindex]);
+    scanf("%d", &reserveCarID[Rindex]);
 
     // Check if car is already reserved
     for (int i = 0; i < Rindex; ++i) {
         if (reserveCarID[i] == reserveCarID[Rindex]) {
-            printf("\n!!! Can’t reserve car because it's already reserved !!!\n");
+            printf("\n!!! Cant reserve car because it's already reserved !!!\n");
             return; // Exit the function if car is already reserved
         }
     }
@@ -697,7 +697,7 @@ void reserve(int reserveID[], int reserveCustomerID[], int reserveCarID[], int r
     }
 
     printf("\nPlease enter Customer ID: ");
-    scanf_s("%d", &ID);
+    scanf("%d", &ID);
 
     // Validate Customer ID
     for (int i = 0; i < customer_count; ++i) {
@@ -710,7 +710,7 @@ void reserve(int reserveID[], int reserveCustomerID[], int reserveCarID[], int r
     if (CustomerValidation && CarValidation) {
         reserveCustomerID[Rindex] = ID;
         printf("\nEnter number of day you want to rent car : ");
-        scanf_s("%d", &reserveDays[Rindex]);
+        scanf("%d", &reserveDays[Rindex]);
         Rindex++;
         printf("\n** Reservation Added Succsecfully! **\n");
     }
@@ -724,7 +724,7 @@ void delete_reservation(int reserveID[], int reserveCustomerID[], int reserveCar
     bool found = false;
 
     printf("Enter Reserve ID to cancel the reservation: ");
-    scanf_s("%d", &Rid);
+    scanf("%d", &Rid);
 
     // Loop through all reservations to find the matching ID
     for (i = 0; i < *Rindex; ++i) {
@@ -789,7 +789,7 @@ void search_reserve_id(int reserveID[], int reserveCustomerID[], int reserveCarI
     int r_id;
     bool flag = false;
     printf("Enter reserve id to search : ");
-    scanf_s("%d", &r_id);
+    scanf("%d", &r_id);
     for (int i = 0; i < Rindex; i++) {
         if (r_id == reserveID[i]) {
             printf("%s%25s%25s%25s\n", "Reserve ID", "Customer ID", "Car ID", "No. of days");
@@ -807,7 +807,8 @@ void SaveData(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], i
     FILE* wPtr;
 
     // Open customer information file once
-    if (fopen_s(&wPtr, "customerInfo.txt", "w")) {
+    wPtr = fopen("customerInfo.txt", "w");
+    if (wPtr == NULL) {
         printf("Cannot open customerInfo file\n");
         return;
     }
@@ -822,7 +823,8 @@ void SaveData(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], i
 
     fclose(wPtr);
 
-    if (fopen_s(&wPtr, "carInfo.txt", "w")) {
+    wPtr = fopen("carInfo.txt", "w");
+    if (wPtr == NULL) {
         printf("Cannot open carInfo file\n");
         return;
     }
@@ -840,9 +842,9 @@ void SaveData(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], i
 void SaveRData(int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[], double reservePrice[]) {
 
     FILE* file;
-    fopen_s(&file, "reserveInfo.txt", "wt");
+    file = fopen("reserveInfo.txt", "wt");
     if (file == NULL) {
-        if (fscanf_s(file, "%d%d%d%d%lf", &reserveID[Rindex], &reserveCustomerID[Rindex], &reserveCarID[Rindex], &reserveDays[Rindex], &reservePrice[Rindex]) != 5) {
+        if (fscanf(file, "%d%d%d%d%lf", &reserveID[Rindex], &reserveCustomerID[Rindex], &reserveCarID[Rindex], &reserveDays[Rindex], &reservePrice[Rindex]) != 5) {
             printf("Error opening file to write reservations.\n");
             return;
         }
@@ -857,45 +859,47 @@ void SaveRData(int reserveID[], int reserveCustomerID[], int reserveCarID[], int
 // Reads customer, car, and reservation data from files
 void ReadFromFile(char CustomerName[][NAMESIZE], char CustomerNumber[][PHONESIZE], int CustomerID[], int CarID[], char car_color[][CAR], char car_model[CARSIZE][CAR], double rent_price[], int reserveID[], int reserveCustomerID[], int reserveCarID[], int reserveDays[], double reservePrice[]) {
     FILE* rPtr;
-    if (fopen_s(&rPtr, "customerInfo.txt", "r")) {
+    rPtr = fopen("customerInfo.txt", "r");
+    if (rPtr == NULL) {
 
     }
     else {
         char fName[NAMESIZE], lName[NAMESIZE];
-        while (fscanf_s(rPtr, "%d %79s %79s %10s", &CustomerID[customer_count], fName, NAMESIZE, lName, NAMESIZE, CustomerNumber[customer_count], PHONESIZE) == 4) {
+        while (fscanf(rPtr, "%d %79s %79s %10s", &CustomerID[customer_count], fName, lName, CustomerNumber[customer_count]) == 4) {
             // Correctly combine fName and lName into the CustomerName array at customer_count index
-            strcpy_s(CustomerName[customer_count], NAMESIZE, fName);
-            strcat_s(CustomerName[customer_count], NAMESIZE, " ");
-            strcat_s(CustomerName[customer_count], NAMESIZE, lName);
+            strcpy(CustomerName[customer_count], fName);
+            strcat(CustomerName[customer_count], " ");
+            strcat(CustomerName[customer_count], lName);
 
             customer_count++; // Increment customer_count after storing each customer's data
         }
         fclose(rPtr);
     }
 
-    if (fopen_s(&rPtr, "carInfo.txt", "r")) {
+    rPtr = fopen("carInfo.txt", "r");
+    if (rPtr == NULL) {
 
     }
     else {
         char maintype[CAR], subtype[CAR];
-        while (fscanf_s(rPtr, "%d%s%s%s%lf", &CarID[car_count], maintype, CAR, subtype, CAR, car_color[car_count], CAR, &rent_price[car_count]) == 5) {
-            strcpy_s(car_model[car_count], CAR, maintype);
-            strcat_s(car_model[car_count], CAR, " ");
-            strcat_s(car_model[car_count], CAR, subtype);
+        while (fscanf(rPtr, "%d%s%s%s%lf", &CarID[car_count], maintype, subtype, car_color[car_count], &rent_price[car_count]) == 5) {
+            strcpy(car_model[car_count], maintype);
+            strcat(car_model[car_count], " ");
+            strcat(car_model[car_count], subtype);
             car_count++;
         }
 
         fclose(rPtr);
     }
     FILE* file;
-    fopen_s(&file, "reserveInfo.txt", "rt");
+    file = fopen("reserveInfo.txt", "rt");
     if (file == NULL) {
 
     }
     else {
         Rindex = 0;
 
-        while (fscanf_s(file, "%d%d%d%d%lf", &reserveID[Rindex], &reserveCustomerID[Rindex], &reserveCarID[Rindex], &reserveDays[Rindex], &reservePrice[Rindex]) == 5) {
+        while (fscanf(file, "%d%d%d%d%lf", &reserveID[Rindex], &reserveCustomerID[Rindex], &reserveCarID[Rindex], &reserveDays[Rindex], &reservePrice[Rindex]) == 5) {
             Rindex++;
         }
 
